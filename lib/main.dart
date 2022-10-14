@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -24,8 +25,10 @@ class _HomePageWidgetState extends State<HomePageWidget>
   late Timer timer;
 
   String botText = 'Say, Hi MegaMind to wakeup bot';
+  Map productMap = {};
   int maskState = 2;
-  int countDown = 60;
+  // int countDown = 60;
+  int countDown = 0;
 
   @override
   void initState() {
@@ -42,11 +45,17 @@ class _HomePageWidgetState extends State<HomePageWidget>
       // socket.emit('app_event', {'app': '0'});
     });
 
-    // change data
+    // update data
     socket.on('data_response', (data) {
-      // print(data);
-      setState(() => maskState = int.parse(data['mask']));
-      setState(() => botText = data['botText']);
+      print(data);
+      maskState = int.parse(data['mask']);
+      botText = data['botText'];
+      setState(() {});
+    });
+    socket.on('product_response', (data) {
+      print(data);
+      productMap = data;
+      setState(() {});
     });
 
     // switching app
@@ -123,108 +132,132 @@ class _HomePageWidgetState extends State<HomePageWidget>
       key: scaffoldKey,
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
-            child: Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: BoxDecoration(
-                color: const Color(0xFFEEEEEE),
-                borderRadius: BorderRadius.circular(10),
-                shape: BoxShape.rectangle,
-                border: Border.all(
-                  color: Colors.black,
-                  width: 6,
-                ),
+        child: Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
+          child: Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              color: const Color(0xFFEEEEEE),
+              borderRadius: BorderRadius.circular(10),
+              shape: BoxShape.rectangle,
+              border: Border.all(
+                color: Colors.black,
+                width: 6,
               ),
-              child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Image.network(
-                      'https://sp-ao.shortpixel.ai/client/to_webp,q_glossy,ret_img,w_390/https://megamindtech.com/wp-content/uploads/2022/03/logo-1.png',
-                      width: 180,
-                      height: 40,
-                      fit: BoxFit.contain,
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
-                        child: DefaultTabController(
-                          length: 3,
-                          initialIndex: 0,
-                          child: Column(
-                            children: [
-                              TabBar(
+            ),
+            child: Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.network(
+                    'https://i0.wp.com/megamindtech.com/wp-content/uploads/2022/03/logo-1.png?fit=390%2C79&ssl=1',
+                    width: 180,
+                    height: 40,
+                    fit: BoxFit.contain,
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding:
+                          const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
+                      child: DefaultTabController(
+                        length: 3,
+                        initialIndex: 0,
+                        child: Column(
+                          children: [
+                            TabBar(
+                              controller: tabController,
+                              labelColor: Colors.indigo,
+                              labelStyle: const TextStyle(
+                                  color: Colors.blue,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                              indicatorColor: Colors.lightBlueAccent,
+                              tabs: const [
+                                Tab(
+                                  text: 'Mask Detection',
+                                ),
+                                Tab(
+                                  text: 'People Counter',
+                                ),
+                                Tab(
+                                  text: 'Robo Reciptionist',
+                                ),
+                              ],
+                            ),
+                            Expanded(
+                              child: TabBarView(
                                 controller: tabController,
-                                labelColor: Colors.indigo,
-                                labelStyle: const TextStyle(
-                                    color: Colors.blue,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold),
-                                indicatorColor: Colors.lightBlueAccent,
-                                tabs: const [
-                                  Tab(
-                                    text: 'Mask Detection',
-                                  ),
-                                  Tab(
-                                    text: 'Gesture Recognision',
-                                  ),
-                                  Tab(
-                                    text: 'Robo Reciptionist',
-                                  ),
-                                ],
-                              ),
-                              Expanded(
-                                child: TabBarView(
-                                  controller: tabController,
-                                  children: [
-                                    Padding(
-                                      padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              70, 20, 70, 10),
-                                      child: Container(
-                                        width: 100,
-                                        height: 100,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          // color: const Color(0xFFEEEEEE),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          border: Border.all(
-                                            width: 6,
-                                          ),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsetsDirectional
-                                              .fromSTEB(0, 10, 0, 10),
-                                          child: maskState == 2
-                                              ? Text(
-                                                  countDown == 0
-                                                      ? "Detecting..."
-                                                      : "$countDown",
-                                                  style: const TextStyle(
-                                                      fontSize: 40,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              : Image.asset(maskState == 1
-                                                  ? "assets/with_mask.gif"
-                                                  : "assets/no_mask.gif"),
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            70, 20, 70, 10),
+                                    child: Container(
+                                      width: 100,
+                                      height: 100,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        // color: const Color(0xFFEEEEEE),
+                                        borderRadius:
+                                            BorderRadius.circular(10),
+                                        border: Border.all(
+                                          width: 6,
                                         ),
                                       ),
+                                      child: Padding(
+                                        padding: const EdgeInsetsDirectional
+                                            .fromSTEB(0, 10, 0, 10),
+                                        child: maskState == 2
+                                            ? Text(
+                                                countDown == 0
+                                                    ? "Detecting..."
+                                                    : "$countDown",
+                                                style: const TextStyle(
+                                                    fontSize: 40,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )
+                                            : Image.asset(maskState == 1
+                                                ? "assets/with_mask.gif"
+                                                : "assets/no_mask.gif"),
+                                      ),
                                     ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              70, 20, 70, 10),
-                                      child: Container(
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            70, 20, 70, 10),
+                                    child: Container(
+                                      width: 100,
+                                      height: 100,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFEEEEEE),
+                                        borderRadius:
+                                            BorderRadius.circular(10),
+                                        border: Border.all(
+                                          width: 6,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        countDown == 0
+                                            ? "Detecting..."
+                                            : "$countDown",
+                                        style: const TextStyle(
+                                            fontSize: 40,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            70, 20, 70, 10),
+                                    child: Container(
                                         width: 100,
                                         height: 100,
                                         alignment: Alignment.center,
@@ -236,81 +269,90 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                             width: 6,
                                           ),
                                         ),
-                                        child: Text(
-                                          countDown == 0
-                                              ? "Detecting..."
-                                              : "$countDown",
-                                          style: const TextStyle(
-                                              fontSize: 40,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              70, 20, 70, 10),
-                                      child: Container(
-                                          width: 100,
-                                          height: 100,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFFEEEEEE),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            border: Border.all(
-                                              width: 6,
-                                            ),
-                                          ),
-                                          child: countDown == 0
-                                              ? Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.max,
-                                                  children: [
-                                                    Expanded(
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                0, 10, 0, 10),
-                                                        child: Image.asset(
-                                                            "assets/bot_listen.gif"),
-                                                      ),
-                                                    ),
-                                                    Padding(
+                                        child: countDown == 0
+                                            ? Column(
+                                                mainAxisSize:
+                                                    MainAxisSize.max,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  // Expanded(
+                                                  //   child: Padding(
+                                                  //     padding:
+                                                  //         const EdgeInsetsDirectional
+                                                  //                 .fromSTEB(
+                                                  //             0, 10, 0, 10),
+                                                  //     child: Image.asset(
+                                                  //         "assets/bot_listen.gif"),
+                                                  //   ),
+                                                  // ),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Padding(
                                                       padding:
                                                           const EdgeInsetsDirectional
                                                                   .fromSTEB(
-                                                              10, 0, 10, 10),
+                                                              10, 20, 10, 10),
                                                       child: Text(
                                                         botText,
                                                         style: const TextStyle(
-                                                            fontSize: 25,
+                                                            fontSize: 22,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .bold),
                                                       ),
                                                     ),
-                                                  ],
-                                                )
-                                              : Text(
-                                                  "$countDown",
-                                                  style: const TextStyle(
-                                                      fontSize: 40,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )),
-                                    ),
-                                  ],
-                                ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 4,
+                                                    child: ListView.builder(
+                                                      scrollDirection: Axis.horizontal,
+                                                      padding: EdgeInsets.all(10),
+                                                      itemCount: productMap.length,
+                                                      itemBuilder:
+                                                          (BuildContext context, int index) {
+                                                        return Card(
+                                                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                                                          color: Colors.white,
+                                                          elevation: 3,
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(8),
+                                                          ),
+                                                          child: Container(
+                                                            width: 200,
+                                                            height: 200,
+                                                            alignment: Alignment.center,
+                                                            child: Column(
+                                                              children: [
+                                                                Image.network(productMap.values.elementAt(index)),
+                                                                Text(productMap.keys.elementAt(index),
+                                                                    style: TextStyle(
+                                                                        fontSize: 14)),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            : Text(
+                                                "$countDown",
+                                                style: const TextStyle(
+                                                    fontSize: 40,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
