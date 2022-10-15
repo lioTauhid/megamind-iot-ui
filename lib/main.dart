@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -27,8 +26,7 @@ class _HomePageWidgetState extends State<HomePageWidget>
   String botText = 'Say, Hi MegaMind to wakeup bot';
   Map productMap = {};
   int maskState = 2;
-  // int countDown = 60;
-  int countDown = 0;
+  int countDown = 60;
 
   @override
   void initState() {
@@ -294,6 +292,7 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                                               10, 20, 10, 10),
                                                       child: Text(
                                                         botText,
+                                                        textAlign: TextAlign.center,
                                                         style: const TextStyle(
                                                             fontSize: 22,
                                                             fontWeight:
@@ -306,29 +305,28 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                                     flex: 4,
                                                     child: ListView.builder(
                                                       scrollDirection: Axis.horizontal,
+                                                      shrinkWrap: true,
                                                       padding: EdgeInsets.all(10),
                                                       itemCount: productMap.length,
                                                       itemBuilder:
                                                           (BuildContext context, int index) {
-                                                        return Card(
-                                                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                                                          color: Colors.white,
-                                                          elevation: 3,
-                                                          shape: RoundedRectangleBorder(
+                                                        return Container(
+                                                          width: 200,
+                                                          height: Size.infinite.height,
+                                                          margin: EdgeInsets.all(10),
+                                                          padding: EdgeInsets.all(10),
+                                                          decoration: BoxDecoration(
                                                             borderRadius: BorderRadius.circular(8),
+                                                            color: Colors.white,
                                                           ),
-                                                          child: Container(
-                                                            width: 200,
-                                                            height: 200,
-                                                            alignment: Alignment.center,
-                                                            child: Column(
-                                                              children: [
-                                                                Image.network(productMap.values.elementAt(index)),
-                                                                Text(productMap.keys.elementAt(index),
-                                                                    style: TextStyle(
-                                                                        fontSize: 14)),
-                                                              ],
-                                                            ),
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.end,
+                                                            children: [
+                                                              Image.network(productMap.values.elementAt(index), height: 200,),
+                                                              Text(productMap.keys.elementAt(index),
+                                                                  style: TextStyle(
+                                                                      fontSize: 14)),
+                                                            ],
                                                           ),
                                                         );
                                                       },
