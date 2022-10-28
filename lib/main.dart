@@ -26,7 +26,8 @@ class _HomePageWidgetState extends State<HomePageWidget>
   String botText = 'Say, Hi MegaMind to wakeup bot';
   Map productMap = {};
   int maskState = 2;
-  int countDown = 60;
+  // int countDown = 60;
+  int countDown = 0;
 
   @override
   void initState() {
@@ -200,8 +201,7 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
                                         // color: const Color(0xFFEEEEEE),
-                                        borderRadius:
-                                            BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.circular(10),
                                         border: Border.all(
                                           width: 6,
                                         ),
@@ -235,8 +235,7 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
                                         color: const Color(0xFFEEEEEE),
-                                        borderRadius:
-                                            BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.circular(10),
                                         border: Border.all(
                                           width: 6,
                                         ),
@@ -269,9 +268,9 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                         ),
                                         child: countDown == 0
                                             ? Column(
-                                                mainAxisSize:
-                                                    MainAxisSize.max,
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisSize: MainAxisSize.max,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
                                                   // Expanded(
                                                   //   child: Padding(
@@ -289,12 +288,13 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                                       padding:
                                                           const EdgeInsetsDirectional
                                                                   .fromSTEB(
-                                                              10, 20, 10, 10),
+                                                              10, 20, 10, 0),
                                                       child: Text(
                                                         botText,
-                                                        textAlign: TextAlign.center,
+                                                        textAlign:
+                                                            TextAlign.center,
                                                         style: const TextStyle(
-                                                            fontSize: 22,
+                                                            fontSize: 20,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .bold),
@@ -302,30 +302,65 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                                     ),
                                                   ),
                                                   Expanded(
-                                                    flex: 4,
+                                                    flex: 5,
                                                     child: ListView.builder(
-                                                      scrollDirection: Axis.horizontal,
+                                                      scrollDirection:
+                                                          Axis.horizontal,
                                                       shrinkWrap: true,
-                                                      padding: EdgeInsets.all(10),
-                                                      itemCount: productMap.length,
+                                                      itemCount:
+                                                          productMap.length,
                                                       itemBuilder:
-                                                          (BuildContext context, int index) {
+                                                          (BuildContext context,
+                                                              int index) {
                                                         return Container(
                                                           width: 200,
-                                                          height: Size.infinite.height,
-                                                          margin: EdgeInsets.all(10),
-                                                          padding: EdgeInsets.all(10),
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(8),
+                                                          height: Size
+                                                              .infinite.height,
+                                                          margin:
+                                                              const EdgeInsets
+                                                                  .all(10),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(10),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        8),
                                                             color: Colors.white,
                                                           ),
                                                           child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.end,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .end,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
                                                             children: [
-                                                              Image.network(productMap.values.elementAt(index), height: 200,),
-                                                              Text(productMap.keys.elementAt(index),
-                                                                  style: TextStyle(
-                                                                      fontSize: 14)),
+                                                              Image.network(
+                                                                productMap
+                                                                    .values
+                                                                    .elementAt(
+                                                                        index).toString().split('|')[0],
+                                                                height: 200,
+                                                              ),
+                                                              Text(
+                                                                  "\$${productMap.values.elementAt(index).toString().split('|')[1]}",
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          15,
+                                                                      color: Colors
+                                                                          .green)),
+                                                              Text(
+                                                                  productMap
+                                                                          .keys
+                                                                          .elementAt(
+                                                                              index)
+                                                                          .toString(),
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          14)),
                                                             ],
                                                           ),
                                                         );
