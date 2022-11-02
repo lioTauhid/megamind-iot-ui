@@ -26,8 +26,8 @@ class _HomePageWidgetState extends State<HomePageWidget>
   String botText = 'Say, Hi MegaMind to wakeup bot';
   Map productMap = {};
   int maskState = 2;
-  // int countDown = 60;
-  int countDown = 0;
+  int countDown = 60;
+  // int countDown = 0;
 
   @override
   void initState() {
@@ -342,7 +342,10 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                                                 productMap
                                                                     .values
                                                                     .elementAt(
-                                                                        index).toString().split('|')[0],
+                                                                        index)
+                                                                    .toString()
+                                                                    .split(
+                                                                        '|')[0],
                                                                 height: 200,
                                                               ),
                                                               Text(
@@ -354,10 +357,10 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                                                           .green)),
                                                               Text(
                                                                   productMap
-                                                                          .keys
-                                                                          .elementAt(
-                                                                              index)
-                                                                          .toString(),
+                                                                      .keys
+                                                                      .elementAt(
+                                                                          index)
+                                                                      .toString(),
                                                                   style: const TextStyle(
                                                                       fontSize:
                                                                           14)),
