@@ -2,7 +2,7 @@
 
 A new Flutter web ui project for an IoT app.
 
-## Getting Started
+## Sample
 
 <h1 align="center">
   <br>
