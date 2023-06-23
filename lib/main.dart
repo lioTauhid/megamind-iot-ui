@@ -1,6 +1,7 @@
 import 'dart:async';
-
+import 'dart:html';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 void main() {
@@ -133,6 +134,8 @@ class _HomePageWidgetState extends State<HomePageWidget>
 
   @override
   Widget build(BuildContext context) {
+    document.documentElement!.requestFullscreen();
+
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: Colors.white,
