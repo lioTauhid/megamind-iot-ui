@@ -223,11 +223,12 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                             children: [
                                               if (botText.isEmpty)
                                                 Expanded(
-                                                  flex: 6,
+                                                  flex: 10,
                                                   child: Padding(
                                                     padding:
                                                         const EdgeInsets.only(
-                                                            top: 20),
+                                                            top: 20,
+                                                            bottom: 10),
                                                     child: ClipRRect(
                                                       borderRadius:
                                                           BorderRadius.circular(
@@ -244,39 +245,63 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                                   ),
                                                 ),
                                               Expanded(
-                                                flex: 1,
+                                                flex: 3,
                                                 child: Padding(
                                                   padding:
                                                       const EdgeInsetsDirectional
                                                               .fromSTEB(
                                                           10, 20, 10, 0),
-                                                  child: Text(
-                                                    "You say : " + userText,
-                                                    textAlign: TextAlign.center,
-                                                    style: const TextStyle(
-                                                        fontSize: 20,
-                                                        fontWeight:
-                                                            FontWeight.bold),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      const Icon(Icons.mic),
+                                                      Text(
+                                                        userText,
+                                                        // textAlign: TextAlign.center,
+                                                        style: const TextStyle(
+                                                            fontSize: 22,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                               ),
                                               if (botText.isNotEmpty)
                                                 Expanded(
-                                                  flex: 3,
+                                                  flex: 6,
                                                   child: Padding(
                                                     padding:
                                                         const EdgeInsetsDirectional
                                                                 .fromSTEB(
                                                             10, 20, 10, 0),
-                                                    child: Text(
-                                                      "Assistant : \n" +
-                                                          botText,
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: const TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight:
-                                                              FontWeight.bold),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        const Icon(Icons.chat),
+                                                        Expanded(
+                                                          child: Text(
+                                                            botText,
+                                                            // textAlign: TextAlign.center,
+                                                            style: const TextStyle(
+                                                                fontSize: 22,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
                                                 ),
