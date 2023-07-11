@@ -6,7 +6,7 @@ A new Flutter web ui project for an IoT app.
 
 <h1 align="center">
   <br>
-  <a><img src="https://raw.githubusercontent.com/lioTauhid/megamind-iot-ui/main/Screenshot.png"></a>
+  <a><img src="https://raw.githubusercontent.com/lioTauhid/megamind-iot-ui/main/assets/with_mask.gif"></a>
   <br>
   <br>
 </h1>
