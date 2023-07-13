@@ -26,11 +26,12 @@ class _HomePageWidgetState extends State<HomePageWidget>
 
   String userText = 'Say, Hi MegaMind to wakeup bot';
   String botText = '';
+  String genderType = 'loading';
   Map productMap = {};
   int maskState = 2;
 
   // int countDown = 60;
-  int countDown = 10;
+  int countDown = 0;
 
   @override
   void initState() {
@@ -40,11 +41,12 @@ class _HomePageWidgetState extends State<HomePageWidget>
 
     socket.onConnect((_) {
       // print('connected');
-      socket.emit('data_event', {
-        'mask': '2',
-        'botText': '',
-        'userText': 'Say, Hi MegaMind to wakeup bot',
-      });
+      // socket.emit('data_event', {
+      //   'mask': '2',
+      //   'botText': '',
+      //   'userText': 'Say, Hi MegaMind to wakeup bot',
+      //   'genderType': genderType,
+      // });
       showSnackBar(context,
           'ChatGPT Bot is starting \nIt will take 10 second to start', 10);
       // socket.emit('app_event', {'app': '0'});
@@ -56,6 +58,7 @@ class _HomePageWidgetState extends State<HomePageWidget>
       // maskState = int.parse(data['mask']);
       userText = data['userText'];
       botText = data['botText'];
+      genderType = data['genderType'];
       setState(() {});
     });
     // socket.on('product_response', (data) {
@@ -184,13 +187,13 @@ class _HomePageWidgetState extends State<HomePageWidget>
                             indicatorColor: Colors.lightBlueAccent,
                             tabs: const [
                               Tab(
+                                text: 'AI Smart Sign',
+                              ),
+                              Tab(
                                 text: 'ChatGPT Bot',
                               ),
                               Tab(
                                 text: 'Mask Detection',
-                              ),
-                              Tab(
-                                text: 'People Counter',
                               ),
                               Tab(
                                 text: 'Robo Reciptionist',
@@ -201,6 +204,70 @@ class _HomePageWidgetState extends State<HomePageWidget>
                             child: TabBarView(
                               controller: tabController,
                               children: [
+                                Container(
+                                    width: 100,
+                                    height: 100,
+                                    margin:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            20, 20, 20, 10),
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFEEEEEE),
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        width: 6,
+                                      ),
+                                    ),
+                                    child: countDown == 0
+                                        ? Column(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Expanded(
+                                                flex: 10,
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  child: Image.asset(
+                                                    "assets/$genderType.gif",
+                                                    height:
+                                                        Size.infinite.height,
+                                                    // width:
+                                                    //     Size.infinite.width,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(5.0),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Icon(
+                                                        Icons.camera_alt),
+                                                    Text(
+                                                      genderType,
+                                                      style: const TextStyle(
+                                                          fontSize: 22,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : Text(
+                                            "$countDown",
+                                            style: const TextStyle(
+                                                fontSize: 40,
+                                                fontWeight: FontWeight.bold),
+                                          )),
                                 Container(
                                     width: 100,
                                     height: 100,
@@ -343,30 +410,6 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                           : Image.asset(maskState == 1
                                               ? "assets/with_mask.gif"
                                               : "assets/no_mask.gif"),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      70, 20, 70, 10),
-                                  child: Container(
-                                    width: 100,
-                                    height: 100,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFEEEEEE),
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        width: 6,
-                                      ),
-                                    ),
-                                    child: Text(
-                                      countDown == 0
-                                          ? "Detecting..."
-                                          : "$countDown",
-                                      style: const TextStyle(
-                                          fontSize: 40,
-                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ),
