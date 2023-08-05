@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fullscreen_window/fullscreen_window.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'dart:async';
 import 'dart:html';
+
+import 'constant/value.dart';
 
 class MegaMindBot extends StatefulWidget {
   const MegaMindBot({Key? key}) : super(key: key);
@@ -17,15 +18,12 @@ class _MegaMindBotState extends State<MegaMindBot> {
   IO.Socket socket = IO.io('http://0.0.0.0:8080/sock');
   late Timer timer;
 
-  String userText = 'Say, Hi MegaMind to wakeup bot';
+  String userText = '';
   String botText = '';
-  String genderType = 'loading';
-  Map productMap = {};
-  int maskState = 2;
+
+  String backImage = 'assets/starting.gif';
 
   int countDown = 5;
-
-  // int countDown = 0;
 
   @override
   void initState() {
@@ -34,24 +32,22 @@ class _MegaMindBotState extends State<MegaMindBot> {
 
     socket.onConnect((_) {
       // print('connected');
-      // socket.emit('data_event', {
-      //   'mask': '2',
-      //   'botText': '',
-      //   'userText': 'Say, Hi MegaMind to wakeup bot',
-      //   'genderType': genderType,
-      // });
-      showSnackBar(context,
-          'ChatGPT Bot is starting \nIt will take 10 second to start', 10);
-      // socket.emit('app_event', {'app': '0'});
+      showSnackBar(
+          context,
+          'ChatGPT Bot is starting \nIt will take $countDown second to start',
+          countDown);
     });
 
     // update data
     socket.on('data_response', (data) {
-      print(data);
-      // maskState = int.parse(data['mask']);
+      // print(data);
       userText = data['userText'];
       botText = data['botText'];
-      genderType = data['genderType'];
+      backImage = userText.isEmpty
+          ? "assets/wakeup.gif"
+          : botText.isEmpty
+              ? "assets/listening.gif"
+              : "assets/answering.gif";
       setState(() {});
     });
 
@@ -63,9 +59,8 @@ class _MegaMindBotState extends State<MegaMindBot> {
     // await Future.delayed(const Duration(seconds: 1));
     if (countDown == 0) {
       timer.cancel();
+      backImage = 'wakeup.gif';
       setState(() {});
-      showSnackBar(context,
-          'ChatGPT Bot is starting \nIt will take 10 second to start', 10);
       return;
     }
     setState(() => countDown--);
@@ -74,13 +69,14 @@ class _MegaMindBotState extends State<MegaMindBot> {
   @override
   Widget build(BuildContext context) {
     document.documentElement!.requestFullscreen();
+    Size size = MediaQuery.of(context).size;
 
     return Scaffold(
       key: scaffoldKey,
       body: SafeArea(
         child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
+          height: size.height,
+          width: size.width,
           child: GestureDetector(
             onDoubleTap: () {
               document.documentElement!.requestFullscreen();
@@ -90,31 +86,62 @@ class _MegaMindBotState extends State<MegaMindBot> {
               clipBehavior: Clip.antiAliasWithSaveLayer,
               children: [
                 Image.asset(
-                  "assets/starting.gif",
+                  backImage,
                   height: Size.infinite.height,
                   width: Size.infinite.width,
                   fit: BoxFit.cover,
                 ),
                 Positioned(
-                  bottom: 8,
-                  right: 18,
-                  child: Container(
-                    height: 30,
-                    padding: EdgeInsets.zero,
-                    decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    child: TextButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.volume_off,
-                          color: Colors.blue, size: 20),
-                      label: const Text(
-                        "UNMUTE",
-                        style: TextStyle(color: Colors.blue),
+                  left: size.width / 4.2,
+                  right: size.width / 3.2,
+                  top: size.height / 5.5,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(botText.isEmpty ? "" : userText,
+                            style: const TextStyle(
+                                fontSize: fontBig,
+                                fontWeight: FontWeight.bold)),
                       ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  left: size.width / 5,
+                  right: size.width / 3.2,
+                  top: size.height / 1.9,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(botText.isEmpty ? userText : botText,
+                            style: const TextStyle(
+                                fontSize: fontBig,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  left: 18,
+                  child: SizedBox(
+                    height: 60,
+                    child: Row(
+                      children: [
+                        const Text("Powered by : ",
+                            style: TextStyle(
+                                fontSize: 20, fontFamily: "monospace")),
+                        Image.asset(
+                          "MegaMind_ai.png",
+                          height: 60,
+                          width: 120,
+                          color: Colors.blue,
+                          fit: BoxFit.cover,
+                        ),
+                      ],
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
