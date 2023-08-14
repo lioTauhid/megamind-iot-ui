@@ -3,7 +3,6 @@ import 'package:megamind_iot_ui/constant/color.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'dart:async';
 import 'dart:html';
-
 import 'constant/value.dart';
 
 class MegaMindBot extends StatefulWidget {
@@ -20,7 +19,7 @@ class _MegaMindBotState extends State<MegaMindBot> {
 
   String userText = '';
   String botText = '';
-
+  String animatedBotText = '';
   String backImage = 'assets/starting.gif';
 
   int countDown = 4;
@@ -54,11 +53,20 @@ class _MegaMindBotState extends State<MegaMindBot> {
 
   Future<void> updateState() async {
     setState(() {
-      backImage = userText.isEmpty
-          ? "assets/wakeup.gif"
-          : botText.isEmpty
-              ? "assets/listening.gif"
-              : "assets/answering.gif";
+      if (userText.isEmpty) {
+        backImage = "assets/wakeup.gif";
+      } else {
+        if (botText.isEmpty) {
+          if (userText == "Hello! How can i assist you?") {
+            backImage = "assets/after-wakeup.gif";
+          } else {
+            backImage = "assets/listening.gif";
+          }
+        } else {
+          backImage = "assets/answering.gif";
+          _typingAnimation();
+        }
+      }
     });
   }
 
@@ -68,9 +76,31 @@ class _MegaMindBotState extends State<MegaMindBot> {
       timer.cancel();
       backImage = 'assets/wakeup.gif';
       setState(() {});
+      _typingAnimation();
       return;
     }
     setState(() => countDown--);
+  }
+
+  Future<void> _typingAnimation() async {
+    animatedBotText = "";
+    final List<String> _strings = botText.split(".");
+    int _currentIndex = 0;
+
+    for (String s in _strings) {
+      if (_currentIndex < _strings.length) {
+        List<String> words = "$s.".split(" ");
+        for (String w in words) {
+          await Future.delayed(const Duration(milliseconds: 120))
+              .whenComplete(() {
+            setState(() {
+              animatedBotText = animatedBotText + w + " ";
+            });
+          });
+        }
+        _currentIndex++;
+      }
+    }
   }
 
   @override
@@ -95,18 +125,37 @@ class _MegaMindBotState extends State<MegaMindBot> {
                 backImage,
                 height: size.height,
                 width: size.width,
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
               ),
               Positioned(
-                left: size.width / 4.2,
-                right: size.width / 3.2,
+                left: size.width / 30,
+                right: size.width / 3,
                 top: size.height / 5.5,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    Text(botText.isEmpty ? "" : "GUEST :  ",
+                        style: const TextStyle(
+                            fontSize: fontVeryBig,
+                            fontWeight: FontWeight.bold,
+                            color: primaryColor)),
                     Expanded(
-                      child: Text(botText.isEmpty ? "" : userText,
-                          style: const TextStyle(
-                              fontSize: fontBig, fontWeight: FontWeight.bold)),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            color: botText.isEmpty
+                                ? Colors.transparent
+                                : const Color(0xffe9e9e9),
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Text(botText.isEmpty ? "" : userText,
+                            textAlign: TextAlign.justify,
+                            style: const TextStyle(
+                                fontSize: fontBig,
+                                wordSpacing: 10,
+                                height: 1.5,
+                                fontWeight: FontWeight.bold)),
+                      ),
                     ),
                   ],
                 ),
@@ -118,37 +167,26 @@ class _MegaMindBotState extends State<MegaMindBot> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(botText.isEmpty ? userText : botText,
+                        child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          color: botText.isEmpty
+                              ? (userText.isEmpty
+                                  ? Colors.transparent
+                                  : const Color(0xffe9e9e9))
+                              : const Color(0xffe9e9e9),
+                          borderRadius: BorderRadius.circular(20)),
+                      // child: Text(botText.isEmpty ? userText : botText,
+                      child: Text(botText.isEmpty ? userText : animatedBotText,
                           style: const TextStyle(
-                              fontSize: fontBig, fontWeight: FontWeight.bold)),
-                    ),
+                              fontSize: fontBig,
+                              wordSpacing: 10,
+                              height: 1.5,
+                              fontWeight: FontWeight.bold)),
+                    )),
                   ],
                 ),
               ),
-              backImage == 'assets/starting.gif'
-                  ? const SizedBox()
-                  : Positioned(
-                      bottom: 0,
-                      left: 18,
-                      child: SizedBox(
-                        height: 60,
-                        child: Row(
-                          children: [
-                            const Text("Powered by : ",
-                                style: TextStyle(
-                                    fontSize: fontMediumExtra,
-                                    fontFamily: "monospace")),
-                            Image.asset(
-                              "assets/MegaMind_ai.png",
-                              height: 60,
-                              width: 120,
-                              color: primaryColor,
-                              fit: BoxFit.cover,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
             ],
           ),
         ),
@@ -181,6 +219,7 @@ class _MegaMindBotState extends State<MegaMindBot> {
   @override
   void dispose() {
     timer.cancel();
+    socket.dispose();
     super.dispose();
   }
 }

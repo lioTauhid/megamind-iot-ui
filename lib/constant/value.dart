@@ -1,5 +1,5 @@
 
-const double fontVeryBig = 42.0;
+const double fontVeryBig = 62.0;
 const double fontBig = 40.0;
 
 const double fontMediumExtra = 20.0;
