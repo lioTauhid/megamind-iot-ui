@@ -4,10 +4,10 @@ const Color primaryColor = Colors.blue;
 const Color accentColor = Colors.blueAccent;
 const Color secondaryColor = Colors.blueGrey;
 
-Color primaryText = const Color(0xff1D1D1D);
-Color textSecondary = const Color(0xff606060);
-Color primaryBackground = const Color(0xffF1F4F8);
-Color secondaryBackground = const Color(0xffFFFFFF);
+const Color primaryText = Color(0xff1D1D1D);
+const Color textSecondary = Color(0xff606060);
+const Color primaryBackground = Color(0xffe9e9e9);
+const Color secondaryBackground = Color(0xffFFFFFF);
 // Color alternate = const Color(0xff434343);
 
 const Color red = Color(0xffFB180D);
