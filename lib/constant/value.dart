@@ -7,7 +7,7 @@ const fontMedium = 18.0;
 const double fontSmall = 16.0;
 const double fontVerySmall = 12.0;
 
-// const String baseUrl = "https://herotasker.com/api/";
-//
+const String baseUrl = "http://0.0.0.0:8080";
+
 const String appName = "MegaMind Bot";
 const String appVersion = "V 2.0";

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:megamind_iot_ui/constant/color.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'dart:async';
-import 'dart:html';
 import 'constant/value.dart';
 import 'drawer.dart';
 
@@ -22,6 +21,7 @@ class _MegaMindBotState extends State<MegaMindBot> {
   String botText = '';
   String animatedBotText = '';
   String backImage = 'assets/starting.gif';
+  String status = 'Starting MegaMind: Customer Service Bot';
 
   int countDown = 4;
 
@@ -32,10 +32,6 @@ class _MegaMindBotState extends State<MegaMindBot> {
 
     socket.onConnect((_) {
       // print('connected');
-      // showSnackBar(
-      //     context,
-      //     'Connected. ChatGPT Bot is starting \nIt will take $countDown second to start',
-      //     countDown);
     });
 
     // update data
@@ -55,16 +51,20 @@ class _MegaMindBotState extends State<MegaMindBot> {
     setState(() {
       if (userText.isEmpty) {
         backImage = "assets/wakeup.gif";
+        status = 'Ready to help: Say "MegaMind” to start';
       } else {
         if (botText.isEmpty) {
           if (userText == "Hello! How can i assist you?") {
             backImage = "assets/after-wakeup.gif";
+            status = 'Listening: New Conversation';
           } else {
             backImage = "assets/listening.gif";
+            status = 'Listening: Continuing the Conversation';
           }
         } else {
           backImage = "assets/answering.gif";
           _typingAnimation();
+          status = 'Responding: Continuing Conversation';
         }
       }
     });
@@ -74,6 +74,7 @@ class _MegaMindBotState extends State<MegaMindBot> {
     if (countDown == 0) {
       timer.cancel();
       backImage = 'assets/wakeup.gif';
+      status = 'Ready to help: Say "MegaMind” to start';
       setState(() {});
       _typingAnimation();
       return;
@@ -81,30 +82,8 @@ class _MegaMindBotState extends State<MegaMindBot> {
     setState(() => countDown--);
   }
 
-  Future<void> _typingAnimation() async {
-    animatedBotText = "";
-    final List<String> _strings = botText.split(".");
-    int _currentIndex = 0;
-
-    for (String s in _strings) {
-      if (_currentIndex < _strings.length) {
-        List<String> words = "$s.".split(" ");
-        for (String w in words) {
-          await Future.delayed(const Duration(milliseconds: 120))
-              .whenComplete(() {
-            setState(() {
-              animatedBotText = animatedBotText + w + " ";
-            });
-          });
-        }
-        _currentIndex++;
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    document.documentElement!.requestFullscreen();
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -220,33 +199,40 @@ class _MegaMindBotState extends State<MegaMindBot> {
                       ),
                       padding: const EdgeInsets.all(10)),
                 )),
+            Positioned(
+                left: 8,
+                top: 8,
+                child: Text(status,
+                    style: const TextStyle(
+                        color: textSecondary,
+                        fontSize: fontMediumExtra,
+                        fontWeight: FontWeight.bold))),
           ],
         ),
       ),
     );
   }
 
-  // void showSnackBar(BuildContext context, String message, int duration) {
-  //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //     content: Text(
-  //       message,
-  //       style: const TextStyle(color: Colors.white),
-  //     ),
-  //     behavior: SnackBarBehavior.floating,
-  //     // padding: EdgeInsets.all(20),
-  //     margin: const EdgeInsets.fromLTRB(600, 20, 20, 20),
-  //     duration: Duration(seconds: duration),
-  //     backgroundColor: Colors.lightBlue,
-  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-  //     action: SnackBarAction(
-  //       label: 'Ok',
-  //       textColor: Colors.white,
-  //       onPressed: () {
-  //         Navigator.of(context).pop();
-  //       },
-  //     ),
-  //   ));
-  // }
+  Future<void> _typingAnimation() async {
+    animatedBotText = "";
+    final List<String> _strings = botText.split(".");
+    int _currentIndex = 0;
+
+    for (String s in _strings) {
+      if (_currentIndex < _strings.length) {
+        List<String> words = "$s.".split(" ");
+        for (String w in words) {
+          await Future.delayed(const Duration(milliseconds: 120))
+              .whenComplete(() {
+            setState(() {
+              animatedBotText = animatedBotText + w + " ";
+            });
+          });
+        }
+        _currentIndex++;
+      }
+    }
+  }
 
   @override
   void dispose() {

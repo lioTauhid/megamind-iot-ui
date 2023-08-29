@@ -1,5 +1,6 @@
 import 'dart:html';
 import 'package:flutter/material.dart';
+import 'package:megamind_iot_ui/api_client.dart';
 import '../../../constant/color.dart';
 import '../../../constant/value.dart';
 
@@ -35,13 +36,25 @@ Widget sideDrawer(BuildContext context) {
         ListTile(
           title: const Text("Shut down",
               style: TextStyle(color: primaryText, fontSize: fontMedium)),
-          onTap: () {},
+          onTap: () {
+            // call action api
+            Map body = {"action": "shutdown -h now"};
+            ApiClient().post("/action", (body)).then((value) {
+              Navigator.of(context).pop();
+            });
+          },
           leading: const Icon(Icons.power_settings_new, color: red),
         ),
         ListTile(
           title: const Text("Restart Device",
               style: TextStyle(color: primaryText, fontSize: fontMedium)),
-          onTap: () {},
+          onTap: () {
+            // call action api
+            Map body = {"action": "reboot"};
+            ApiClient().post("/action", (body)).then((value) {
+              Navigator.of(context).pop();
+            });
+          },
           leading: const Icon(Icons.refresh_rounded, color: red),
         ),
         ListTile(
