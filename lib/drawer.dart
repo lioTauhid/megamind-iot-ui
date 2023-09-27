@@ -1,4 +1,3 @@
-import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:megamind_iot_ui/api_client.dart';
 import '../../../constant/color.dart';
@@ -25,14 +24,12 @@ Widget sideDrawer(BuildContext context) {
               image: DecorationImage(
                   image: AssetImage("assets/bg.jpg"), fit: BoxFit.fill)),
         ),
-        ListTile(
-          title: const Text("Full-Screen",
-              style: TextStyle(color: primaryText, fontSize: fontMedium)),
-          onTap: () {
-            document.documentElement!.requestFullscreen();
-          },
-          leading: const Icon(Icons.fullscreen_rounded),
-        ),
+        // ListTile(
+        //   title: const Text("Toggle Full-Screen",
+        //       style: TextStyle(color: primaryText, fontSize: fontMedium)),
+        //   onTap: () {},
+        //   leading: const Icon(Icons.fullscreen_rounded),
+        // ),
         ListTile(
           title: const Text("Shut down",
               style: TextStyle(color: primaryText, fontSize: fontMedium)),

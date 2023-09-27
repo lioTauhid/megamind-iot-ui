@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:megamind_iot_ui/constant/color.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -14,8 +16,9 @@ class MegaMindBot extends StatefulWidget {
 
 class _MegaMindBotState extends State<MegaMindBot> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  IO.Socket socket = IO.io('http://0.0.0.0:8080/sock');
+  IO.Socket socket = IO.io(baseUrl + '/sock');
   late Timer timer;
+  bool _isFullScreen = false;
 
   String userText = '';
   String botText = '';
@@ -133,7 +136,8 @@ class _MegaMindBotState extends State<MegaMindBot> {
                       child: Text(botText.isEmpty ? "" : userText,
                           textAlign: TextAlign.justify,
                           style: const TextStyle(
-                              fontSize: fontBig,
+                              // fontSize: fontBig,
+                              fontSize: 35,
                               wordSpacing: 10,
                               height: 1.5,
                               fontWeight: FontWeight.bold)),
@@ -143,9 +147,9 @@ class _MegaMindBotState extends State<MegaMindBot> {
               ),
             ),
             Positioned(
-              left: size.width / 5,
-              right: size.width / 3.2,
-              top: size.height / 1.9,
+              left: size.width / 5.8,
+              right: size.width / 3.5,
+              top: size.height / 2.5,
               child: Row(
                 children: [
                   Expanded(
@@ -167,7 +171,8 @@ class _MegaMindBotState extends State<MegaMindBot> {
                             borderRadius: BorderRadius.circular(20)),
                     child: Text(botText.isEmpty ? userText : animatedBotText,
                         style: const TextStyle(
-                            fontSize: fontBig,
+                            // fontSize: fontBig,
+                            fontSize: 26,
                             wordSpacing: 10,
                             height: 1.5,
                             fontWeight: FontWeight.bold)),
@@ -179,25 +184,48 @@ class _MegaMindBotState extends State<MegaMindBot> {
                 right: 0,
                 top: size.height / 4,
                 child: Container(
-                  height: 55,
-                  width: 20,
-                  padding: const EdgeInsets.only(left: 4, bottom: 3),
+                  height: 100,
+                  width: 25,
                   margin: EdgeInsets.zero,
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(100),
-                        bottomLeft: Radius.circular(100)),
+                        topLeft: Radius.circular(30),
+                        bottomLeft: Radius.circular(30)),
                     color: primaryColor,
                   ),
-                  child: MaterialButton(
-                      onPressed: () {
-                        scaffoldKey.currentState!.openEndDrawer();
-                      },
-                      child: const Icon(
-                        Icons.arrow_back_ios,
-                        color: white,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      MaterialButton(
+                        onPressed: () {
+                          scaffoldKey.currentState!.openEndDrawer();
+                        },
+                        child: const Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          color: white,
+                          size: 26,
+                        ),
+                        padding: const EdgeInsets.only(right: 0),
                       ),
-                      padding: const EdgeInsets.all(10)),
+                      MaterialButton(
+                        onPressed: () {
+                          if (_isFullScreen) {
+                            document.exitFullscreen();
+                            _isFullScreen = false;
+                          } else {
+                            document.documentElement!.requestFullscreen();
+                            _isFullScreen = true;
+                          }
+                        },
+                        child: const Icon(
+                          Icons.fullscreen_rounded,
+                          color: white,
+                          size: 27,
+                        ),
+                        padding: const EdgeInsets.all(0),
+                      )
+                    ],
+                  ),
                 )),
             Positioned(
                 left: 8,
